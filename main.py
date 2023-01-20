@@ -11,6 +11,8 @@ alert_words = {}
 # Add a new command "/alert_words" to show the list of alert words
 @bot.message_handler(commands=["alert_words"])
 def show_alert_words(message):
+    if message.chat.type != "private":
+        return
     user_id = message.from_user.id
     alert_words_list = alert_words.get(user_id, [])
     if alert_words_list:
@@ -24,8 +26,14 @@ def show_alert_words(message):
 # Add a new command "/remove_alert" to remove a specific alert word
 @bot.message_handler(commands=["remove_alert"])
 def remove_alert(message):
+    if message.chat.type != "private":
+        return
     user_id = message.from_user.id
-    alert_word = message.text.split(" ")[1]
+    words = message.text.split(" ")
+    if len(words) < 2:
+        bot.send_message(user_id, "Please provide an alert word to remove.")
+        return
+    alert_word = words[1]
     if user_id in alert_words:
         if alert_word in alert_words[user_id]:
             alert_words[user_id].remove(alert_word)
@@ -57,6 +65,8 @@ def set_alert(message):
 
 @bot.message_handler(commands=["add_group"])
 def add_group(message):
+    if message.chat.type != "private":
+        return
     group_id = message.text.split(" ")[1]
     bot.join_chat(group_id)
     bot.send_message(message.from_user.id, f"Added group with ID: {group_id}")
@@ -64,6 +74,8 @@ def add_group(message):
 
 @bot.message_handler(commands=["greet"])
 def greet(message):
+    if message.chat.type != "private":
+        return
     bot.send_message(message.from_user.id, "Hey! Hows it going?")
 
 
