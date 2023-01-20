@@ -8,6 +8,33 @@ bot = telebot.TeleBot(API_KEY)
 
 alert_words = {}
 
+# Add a new command "/alert_words" to show the list of alert words
+@bot.message_handler(commands=["alert_words"])
+def show_alert_words(message):
+    user_id = message.from_user.id
+    alert_words_list = alert_words.get(user_id, [])
+    if alert_words_list:
+        bot.send_message(
+            user_id, f"Your alert words are: {', '.join(alert_words_list)}"
+        )
+    else:
+        bot.send_message(user_id, "You have no alert words set.")
+
+
+# Add a new command "/remove_alert" to remove a specific alert word
+@bot.message_handler(commands=["remove_alert"])
+def remove_alert(message):
+    user_id = message.from_user.id
+    alert_word = message.text.split(" ")[1]
+    if user_id in alert_words:
+        if alert_word in alert_words[user_id]:
+            alert_words[user_id].remove(alert_word)
+            bot.send_message(user_id, f"Alert word '{alert_word}' removed.")
+        else:
+            bot.send_message(user_id, f"Alert word '{alert_word}' not found.")
+    else:
+        bot.send_message(user_id, "You have no alert words set.")
+
 
 @bot.message_handler(commands=["set_alert"])
 def set_alert(message):
