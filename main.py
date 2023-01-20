@@ -8,6 +8,13 @@ bot = telebot.TeleBot(API_KEY)
 
 alert_words = {}
 
+@bot.message_handler(commands=["start"])
+def start(message):
+    bot.send_message(message.chat.id, "Hello! I am a Telegram bot that can set and remove alert words. Here is a list of commands you can use:")
+    bot.send_message(message.chat.id, "/set_alert <word> - Set an alert word")
+    bot.send_message(message.chat.id, "/remove_alert <word> - Remove an alert word")
+    bot.send_message(message.chat.id, "/alert_words - Show all the alert words set")
+
 # Add a new command "/alert_words" to show the list of alert words
 @bot.message_handler(commands=["alert_words"])
 def show_alert_words(message):
