@@ -35,7 +35,7 @@ def check_word(message):
         if alert_word in message.text:
             bot.send_message(
                 user_id,
-                f'The word "{alert_word}" has appeared in the chat: "{message.text}"',
+                f'The word "{alert_word}" has appeared in the chat: "{message.text}". Link to the message: t.me/c/{message.chat.id}/{message.message_id}',
             )
 
 
@@ -46,7 +46,7 @@ def check_word_photo(message):
             bot.send_photo(
                 user_id,
                 message.photo[-1].file_id,
-                caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}"',
+                caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: https://web.telegram.org/k/#{message.chat.id}/{message.message_id}',
             )
 
 
@@ -57,7 +57,7 @@ def check_word_video(message):
             bot.send_video(
                 user_id,
                 message.video.file_id,
-                caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}"',
+                caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: https://web.telegram.org/k/#{message.chat.id}/{message.message_id}',
             )
 
 
