@@ -77,31 +77,3 @@ def check_word_video(message):
 
 
 bot.polling()
-
-
-# @bot.message_handler(content_types=["photo"])
-# def check_word_photo(message):
-#     for user_id, alert_word in alert_words.items():
-#         if message.caption and alert_word in message.caption:
-#             bot.send_photo(
-#                 user_id,
-#                 message.photo[-1].file_id,
-#                 caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: https://t.me/c/{message.chat.id}/{message.message_id}',
-#             )
-
-
-# @bot.message_handler(content_types=["video"])
-# def check_word_video(message):
-#     for user_id, alert_word in alert_words.items():
-#         if message.caption and alert_word in message.caption:
-#             limpio_chat = str(message.chat.id)
-#             new_number_str = limpio_chat[3:]
-#             new_number = int(new_number_str)
-#             bot.send_video(
-#                 user_id,
-#                 message.video.file_id,
-#                 caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: https://t.me/c/{new_number}/{message.message_id}',
-#             )
-
-
-# bot.polling()
