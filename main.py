@@ -14,7 +14,6 @@ def set_alert(message):
     user_id = message.from_user.id
     alert_word = message.text.split(" ")[1]
     alert_words[user_id] = alert_word
-    print(alert_wordsalert_words[user_id])
     bot.send_message(user_id, f"Alert word set to: {alert_word}")
 
 
@@ -35,7 +34,30 @@ def check_word(message):
     for user_id, alert_word in alert_words.items():
         if alert_word in message.text:
             bot.send_message(
-                user_id, f'The word "{alert_word}" has appeared in the chat.'
+                user_id,
+                f'The word "{alert_word}" has appeared in the chat: "{message.text}"',
+            )
+
+
+@bot.message_handler(content_types=["photo"])
+def check_word_photo(message):
+    for user_id, alert_word in alert_words.items():
+        if message.caption and alert_word in message.caption:
+            bot.send_photo(
+                user_id,
+                message.photo[-1].file_id,
+                caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}"',
+            )
+
+
+@bot.message_handler(content_types=["video"])
+def check_word_video(message):
+    for user_id, alert_word in alert_words.items():
+        if message.caption and alert_word in message.caption:
+            bot.send_video(
+                user_id,
+                message.video.file_id,
+                caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}"',
             )
 
 
