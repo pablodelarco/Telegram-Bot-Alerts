@@ -109,16 +109,20 @@ def check_word(message):
 
 @bot.message_handler(content_types=["photo"])
 def check_word_photo(message):
+    if message.caption:
+        message_text = message.caption.casefold()
+    else:
+        message_text = ""
     for user_id, alert_words_list in alert_words.items():
         for alert_word in alert_words_list:
-            if message.caption and alert_word in message.caption:
+            if alert_word in message_text:
                 limpio_chat = str(message.chat.id)
                 new_number_str = limpio_chat[3:]
                 new_number = int(new_number_str)
                 bot.send_photo(
                     user_id,
                     message.photo[-1].file_id,
-                    caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: t.me/{new_number}/{message.message_id}',
+                    caption=f'The word "{alert_word}" has appeared in the chat: "{message_text}". Link to the message: t.me/c/{new_number}/{message.message_id}',
                 )
 
 
@@ -126,14 +130,14 @@ def check_word_photo(message):
 def check_word_video(message):
     for user_id, alert_words_list in alert_words.items():
         for alert_word in alert_words_list:
-            if message.caption and alert_word in message.caption:
+            if message.caption and alert_word.casefold() in message.caption.casefold():
                 limpio_chat = str(message.chat.id)
                 new_number_str = limpio_chat[3:]
                 new_number = int(new_number_str)
                 bot.send_video(
                     user_id,
                     message.video.file_id,
-                    caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: t.me/{new_number}/{message.message_id}',
+                    caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: t.me/c/{new_number}/{message.message_id}',
                 )
 
 
