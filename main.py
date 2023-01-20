@@ -68,8 +68,14 @@ def add_group(message):
     if message.chat.type != "private":
         return
     group_id = message.text.split(" ")[1]
-    bot.join_chat(group_id)
-    bot.send_message(message.from_user.id, f"Added group with ID: {group_id}")
+    try:
+        chat = bot.get_chat(group_id)
+        bot.join_chat(chat.id)
+        bot.send_message(message.from_user.id, f"Added group with ID: {group_id}")
+    except Exception as e:
+        bot.send_message(
+            message.from_user.id, f"Error occured while joining group, {str(e)}"
+        )
 
 
 @bot.message_handler(commands=["greet"])
@@ -104,7 +110,7 @@ def check_word_photo(message):
                 bot.send_photo(
                     user_id,
                     message.photo[-1].file_id,
-                    caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: t.me/c/{new_number}/{message.message_id}',
+                    caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: t.me/{new_number}/{message.message_id}',
                 )
 
 
@@ -119,7 +125,7 @@ def check_word_video(message):
                 bot.send_video(
                     user_id,
                     message.video.file_id,
-                    caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: t.me/c/{new_number}/{message.message_id}',
+                    caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: t.me/{new_number}/{message.message_id}',
                 )
 
 
