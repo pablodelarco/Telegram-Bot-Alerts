@@ -38,8 +38,16 @@ def remove_alert(message):
 
 @bot.message_handler(commands=["set_alert"])
 def set_alert(message):
+    if message.chat.type != "private":
+        return
+    alert_word = message.text.split(" ")
+    if len(alert_word) < 2:
+        bot.send_message(
+            message.from_user.id, "Please input a word to set as an alert."
+        )
+        return
+    alert_word = alert_word[1]
     user_id = message.from_user.id
-    alert_word = message.text.split(" ")[1]
     if user_id in alert_words:
         alert_words[user_id].append(alert_word)
     else:
