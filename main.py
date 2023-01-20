@@ -97,6 +97,7 @@ def check_word(message):
     for user_id, alert_words_list in alert_words.items():
         for alert_word in alert_words_list:
             if alert_word in message.text:
+                print(message.text)
                 limpio_chat = str(message.chat.id)
                 new_number_str = limpio_chat[3:]
                 new_number = int(new_number_str)
