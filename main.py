@@ -8,7 +8,6 @@ API_KEY = os.environ.get("API_KEY")
 bot = telebot.TeleBot(API_KEY)
 alert_words = {}
 
-
 @bot.message_handler(commands=["start"])
 def start(message):
     markup = telebot.types.ReplyKeyboardMarkup(row_width=2, one_time_keyboard=True)
@@ -22,7 +21,6 @@ def start(message):
     bot.send_message(message.chat.id, "/set_alert - Set an alert word")
     bot.send_message(message.chat.id, "/remove_alert - Remove an alert word")
     bot.send_message(message.chat.id, "/alert_words - Show all the alert words set")
-
 
 
 @bot.message_handler(commands=["alert_words"])
@@ -77,20 +75,6 @@ def handle_alert_word(message):
         alert_words[user_id] = [alert_word]
     bot.send_message(user_id, f"Alert word set to: {alert_word}")
 
-
-@bot.message_handler(commands=["add_group"])
-def add_group(message):
-    if message.chat.type != "private":
-        return
-    group_id = message.text.split(" ")[1]
-    try:
-        chat = bot.get_chat(group_id)
-        bot.join_chat(chat.id)
-        bot.send_message(message.from_user.id, f"Added group with ID: {group_id}")
-    except Exception as e:
-        bot.send_message(
-            message.from_user.id, f"Error occured while joining group, {str(e)}"
-        )
 
 
 @bot.message_handler(commands=["greet"])
