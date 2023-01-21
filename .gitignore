@@ -1,1 +1,6 @@
+```     
 .env
+```         
+// .env
+``` 
+DB_HOST=localhost
