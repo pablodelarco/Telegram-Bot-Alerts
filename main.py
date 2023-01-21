@@ -1,21 +1,30 @@
 import os
 import telebot
 from dotenv import load_dotenv
-
+from telebot import types
 load_dotenv()
+
 API_KEY = os.environ.get("API_KEY")
 bot = telebot.TeleBot(API_KEY)
-
 alert_words = {}
+
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    bot.send_message(message.chat.id, "Hello! I am a Telegram bot that can set and remove alert words. Here is a list of commands you can use:")
-    bot.send_message(message.chat.id, "/set_alert <word> - Set an alert word")
-    bot.send_message(message.chat.id, "/remove_alert <word> - Remove an alert word")
+    markup = telebot.types.ReplyKeyboardMarkup(row_width=2, one_time_keyboard=True)
+    set_alert_button = telebot.types.KeyboardButton("/set_alert")
+    remove_alert_button = telebot.types.KeyboardButton("/remove_alert")
+    alert_words_button = telebot.types.KeyboardButton("/alert_words")
+    start_button = telebot.types.KeyboardButton("/start")
+    markup.add(set_alert_button, remove_alert_button, alert_words_button, start_button)
+    bot.send_message(chat_id=message.chat.id, text="Hello, I am a Telegram bot that can search for a specific word in a group's messages.", reply_markup=markup)
+    bot.send_message(message.chat.id, "Here is a list of commands you can use:")
+    bot.send_message(message.chat.id, "/set_alert - Set an alert word")
+    bot.send_message(message.chat.id, "/remove_alert - Remove an alert word")
     bot.send_message(message.chat.id, "/alert_words - Show all the alert words set")
 
-# Add a new command "/alert_words" to show the list of alert words
+
+
 @bot.message_handler(commands=["alert_words"])
 def show_alert_words(message):
     if message.chat.type != "private":
@@ -51,17 +60,16 @@ def remove_alert(message):
         bot.send_message(user_id, "You have no alert words set.")
 
 
+# Add a new command "/set_alert" to set a new alert word
 @bot.message_handler(commands=["set_alert"])
 def set_alert(message):
     if message.chat.type != "private":
         return
-    alert_word = message.text.split(" ")
-    if len(alert_word) < 2:
-        bot.send_message(
-            message.from_user.id, "Please input a word to set as an alert."
-        )
-        return
-    alert_word = alert_word[1]
+    bot.send_message(message.from_user.id, "Which word do you want me to look for?")
+    bot.register_next_step_handler(message, handle_alert_word)
+
+def handle_alert_word(message):
+    alert_word = message.text
     user_id = message.from_user.id
     if user_id in alert_words:
         alert_words[user_id].append(alert_word)
