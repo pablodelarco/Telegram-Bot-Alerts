@@ -2,11 +2,25 @@ import os
 import telebot
 from dotenv import load_dotenv
 from telebot import types
+
 load_dotenv()
 
 API_KEY = os.environ.get("API_KEY")
 bot = telebot.TeleBot(API_KEY)
 alert_words = {}
+
+
+@bot.message_handler(commands=["start"])
+def start(message):
+    if message.chat.type != "private":
+        return
+    bot.send_message(
+        message.chat.id,
+        "Hello! I am a Telegram bot that can set and remove alert words. Here is a list of commands you can use:",
+    )
+    bot.send_message(message.chat.id, "/set_alert <word> - Set an alert word")
+    bot.send_message(message.chat.id, "/remove_alert <word> - Remove an alert word")
+    bot.send_message(message.chat.id, "/alert_words - Show all the alert words set")
 
 
 @bot.message_handler(commands=["start"])
@@ -17,12 +31,15 @@ def start(message):
     alert_words_button = telebot.types.KeyboardButton("/alert_words")
     start_button = telebot.types.KeyboardButton("/start")
     markup.add(set_alert_button, remove_alert_button, alert_words_button, start_button)
-    bot.send_message(chat_id=message.chat.id, text="Hello, I am a Telegram bot that can search for a specific word in a group's messages.", reply_markup=markup)
+    bot.send_message(
+        chat_id=message.chat.id,
+        text="Hello, I am a Telegram bot that can search for a specific word in a group's messages.",
+        reply_markup=markup,
+    )
     bot.send_message(message.chat.id, "Here is a list of commands you can use:")
     bot.send_message(message.chat.id, "/set_alert - Set an alert word")
     bot.send_message(message.chat.id, "/remove_alert - Remove an alert word")
     bot.send_message(message.chat.id, "/alert_words - Show all the alert words set")
-
 
 
 @bot.message_handler(commands=["alert_words"])
@@ -67,6 +84,7 @@ def set_alert(message):
         return
     bot.send_message(message.from_user.id, "Which word do you want me to look for?")
     bot.register_next_step_handler(message, handle_alert_word)
+
 
 def handle_alert_word(message):
     alert_word = message.text
@@ -131,21 +149,6 @@ def check_word_photo(message):
                     user_id,
                     message.photo[-1].file_id,
                     caption=f'The word "{alert_word}" has appeared in the chat: "{message_text}". Link to the message: t.me/c/{new_number}/{message.message_id}',
-                )
-
-
-@bot.message_handler(content_types=["video"])
-def check_word_video(message):
-    for user_id, alert_words_list in alert_words.items():
-        for alert_word in alert_words_list:
-            if message.caption and alert_word.casefold() in message.caption.casefold():
-                limpio_chat = str(message.chat.id)
-                new_number_str = limpio_chat[3:]
-                new_number = int(new_number_str)
-                bot.send_video(
-                    user_id,
-                    message.video.file_id,
-                    caption=f'The word "{alert_word}" has appeared in the chat: "{message.caption}". Link to the message: t.me/c/{new_number}/{message.message_id}',
                 )
 
 
