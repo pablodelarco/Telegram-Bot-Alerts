@@ -1,4 +1,4 @@
-﻿# Telegram_bot_Alerts
+﻿# Telegram Bot Alerts
 
 
 This Telegram bot is the perfect solution for staying on top of important information in group chats. With its easy-to-use commands, you can set "alert words" that are important to you and receive notifications whenever they are used in the chat. 
